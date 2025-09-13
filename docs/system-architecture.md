@@ -6,6 +6,7 @@ Dokumen ini menjelaskan arsitektur sistem **Voting DApp** yang terdiri dari Fron
 
 ```mermaid
 flowchart LR
+  %% Subgraphs (each `end` on its own line)
   subgraph FE["Frontend (Vue3+Vite)"]
     UI[Public + Admin UI]
   end
@@ -25,17 +26,19 @@ flowchart LR
     NOTIF[Notifier (optional)]
   end
 
-  UI -- GET polls/results, Admin ops --> API
+  %% Flows
+  UI -- "GET polls/results, Admin ops" --> API
   API --> DB
-  API <-- cache --> Cache
+  API <-- "cache" --> Cache
 
-  API -- Admin push on-chain --> VCW20
-  UI -- Vote TX (Keplr/Leap) --> VCW20
+  API -- "Admin push on-chain" --> VCW20
+  UI -- "Vote TX (Keplr/Leap)" --> VCW20
 
-  VCW20 -- Events (Vote) --> IDX
+  VCW20 -- "Events (Vote)" --> IDX
   IDX --> DB
   NOTIF --> API
   API --> UI
+
 
 
 ## Komponen
