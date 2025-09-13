@@ -7,6 +7,39 @@ Aplikasi voting terdesentralisasi full-stack:
 - **Off-chain**: Indexer & Notifier (opsional) untuk sinkronisasi hasil & reminder
 
 ---
++-----------------------+
+|      Frontend Vue     |
+| (UI publik + admin)    |
++-----------+-----------+
+            |
+            | REST API (polls, vote result, admin operations)
+            v
++-----------------------+
+|   Backend Axum        |
+| MySQL + Redis + JWT   |
++-----------+-----------+
+            |
+            | Admin push poll → on-chain message
+            v
++-----------------------+
+| CosmWasm Contract     |
+| (voting-cw20)         |
++-----------+-----------+
+            |
+            | Emits Vote events
+            v
++-----------------------+
+| Off-chain Indexer     |
+| reads Vote events,     |
+| writes to MySQL       |
++-----------+-----------+
+            |
+            | Cached & fast queries
+            v
++-----------------------+
+| MySQL Database        |
++-----------------------+
+
 
 ## ✨ Fitur
 - Admin:
