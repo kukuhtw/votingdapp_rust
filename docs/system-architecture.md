@@ -4,13 +4,37 @@ Dokumen ini menjelaskan arsitektur sistem **Voting DApp** yang terdiri dari Fron
 
 ## High-level Diagram (Mermaid)
 
-Frontend ──REST──▶ Backend ──▶ MySQL
-   │                 │  ▲
-   │                 ▼  │
-   └─ Vote TX ─────▶ Contract ──▶ Indexer ──▶ MySQL
-                      ▲
-                      └──── (Admin push on-chain from Backend)
-Backend ⇄ Redis (cache)
+sequenceDiagram
+  participant V as Voter (Frontend)
+  participant A as Backend API
+  participant C as Contract (voting-cw20)
+  participant X as Indexer
+  participant M as MySQL
+  participant R as Redis
+
+  V->>A: GET /public/polls (list/detail)
+  A->>R: check cache
+  alt cache hit
+    R-->>A: cached result
+  else cache miss
+    A->>M: query polls/results
+    M-->>A: rows
+    A->>R: set cache
+  end
+  A-->>V: JSON
+
+  Note over V,C: Voting tx (Keplr/Leap)
+  V->>C: execute vote (native or CW20 hook)
+  C-->>V: tx hash
+
+  C-->>X: emit Vote event
+  X->>M: upsert votes_idx / results_cache
+
+  V->>A: GET /public/results/:slug
+  A->>R: check cache
+  R-->>A: cached (or A->>M if miss)
+  A-->>V: aggregated results
+
 
 
 ## Komponen
