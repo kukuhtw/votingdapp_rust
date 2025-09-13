@@ -13,33 +13,34 @@ sequenceDiagram
     participant M as MySQL
     participant R as Redis
     
-    V->>A: GET /public/polls (list/detail)
+    V->>A: GET /public/polls
     A->>R: check cache
     alt cache hit
-        R-->>A: cached result
+        R-->>A: return cached data
     else cache miss
-        A->>M: query polls/results
-        M-->>A: rows
-        A->>R: set cache
+        A->>M: query polls
+        M-->>A: return data
+        A->>R: cache data
     end
-    A-->>V: JSON
+    A-->>V: return JSON
     
-    Note over V,C: Voting tx (Keplr/Leap)
-    V->>C: execute vote (native or CW20 hook)
-    C-->>V: tx hash
+    Note over V,C: Voting Transaction
+    V->>C: execute vote
+    C-->>V: return tx hash
     C->>X: emit Vote event
-    X->>M: upsert votes_idx / results_cache
+    X->>M: update votes and results
     
     V->>A: GET /public/results/:slug
-    A->>R: check cache
+    A->>R: check results cache
     alt cache hit
-        R-->>A: cached result
+        R-->>A: return cached results
     else cache miss
-        A->>M: query from database
-        M-->>A: results data
-        A->>R: set cache
+        A->>M: query results
+        M-->>A: return results
+        A->>R: cache results
     end
-    A-->>V: aggregated results
+    A-->>V: return aggregated results
+
 
 ## Komponen
 
