@@ -1,3 +1,4 @@
+```mermaid
 erDiagram
   ADMIN_USERS ||--o{ POLLS : "created_by (opsional)"
   POLLS ||--o{ VOTES_IDX : "poll_id"
@@ -45,3 +46,4 @@ erDiagram
     decimal total_amount "sum by option"
     bigint updated_at
   }
+
