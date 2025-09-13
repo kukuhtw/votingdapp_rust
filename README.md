@@ -186,6 +186,15 @@ Alamat kontrak akan otomatis ditulis ke `.env` (via `set_env_from_deploy.ts`).
 * Indexer/Notifier: build dengan `cargo run` di folder masing-masing
 
 ---
+👤 Author
+
+Kukuh Tripamungkas Wicaksono
+
+💼 LinkedIn
+
+📧 Email: kukuhtw@gmail.com
+
+💬 WhatsApp: wa.me/628129893706
 
 ## 📜 Lisensi
 
