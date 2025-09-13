@@ -5,41 +5,6 @@ Dokumen ini menjelaskan arsitektur sistem **Voting DApp** yang terdiri dari Fron
 ## High-level Diagram (Mermaid)
 
 ```mermaid
-sequenceDiagram
-    participant V as Voter (Frontend)
-    participant A as Backend API
-    participant C as Contract (voting-cw20)
-    participant X as Indexer
-    participant M as MySQL
-    participant R as Redis
-    
-    V->>A: GET /public/polls
-    A->>R: check cache
-    alt cache hit
-        R-->>A: return cached data
-    else cache miss
-        A->>M: query polls
-        M-->>A: return data
-        A->>R: cache data
-    end
-    A-->>V: return JSON
-    
-    Note over V,C: Voting Transaction
-    V->>C: execute vote
-    C-->>V: return tx hash
-    C->>X: emit Vote event
-    X->>M: update votes and results
-    
-    V->>A: GET /public/results/:slug
-    A->>R: check results cache
-    alt cache hit
-        R-->>A: return cached results
-    else cache miss
-        A->>M: query results
-        M-->>A: return results
-        A->>R: cache results
-    end
-    A-->>V: return aggregated results
 
 
 ## Komponen
