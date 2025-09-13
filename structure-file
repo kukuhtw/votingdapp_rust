@@ -1,0 +1,168 @@
+voting-dapp/
+├─ README.md
+├─ LICENSE
+├─ .gitignore
+├─ .editorconfig
+├─ .env.example
+├─ docker-compose.yml                       # (mongo, redis, backend, frontend, indexer)
+├─ Makefile
+│
+├─ config/
+│  ├─ sandbox/
+│  │  ├─ chain.env                          # CHAIN_ID/RPC/REST/GAS_PRICE
+│  │  ├─ contracts.env                      # VOTING_ADDR/CW20_ADDR
+│  │  ├─ backend.env                        # PORT/MONGO_URI/MONGO_DB/REDIS_URL/JWT_SECRET
+│  │  ├─ frontend.env                       # VITE_* untuk Vue
+│  │  └─ deploy.toml                        # env deploy chain
+│  └─ production/
+│     ├─ chain.env
+│     ├─ contracts.env
+│     ├─ backend.env
+│     ├─ frontend.env
+│     └─ deploy.toml
+│
+├─ scripts/
+│  ├─ init_mongo_indexes.js                 # buat index Mongo (polls, votes_idx, results_cache)
+│  ├─ seed_demo_data.js                     # seed contoh data draft (opsional)
+│  ├─ deploy_contract.ts                    # upload+instantiate CosmWasm (sandbox/prod)
+│  ├─ export_env.sh                         # helper export env vars
+│  └─ refresh_results_cache.ts              # rebuild cache hasil (opsional)
+│
+├─ frontend/                                # Vue 3 + Vite
+│  ├─ package.json
+│  ├─ vite.config.ts
+│  ├─ tsconfig.json
+│  ├─ .env.sandbox
+│  ├─ .env.production
+│  └─ src/
+│     ├─ main.ts
+│     ├─ App.vue
+│     ├─ router/
+│     │  └─ index.ts
+│     ├─ pages/
+│     │  ├─ Home.vue
+│     │  ├─ PublicPollList.vue
+│     │  ├─ PublicPollDetail.vue
+│     │  ├─ AdminLogin.vue
+│     │  ├─ AdminDashboard.vue
+│     │  ├─ AdminPollList.vue
+│     │  ├─ AdminPollCreate.vue
+│     │  ├─ AdminPollEdit.vue
+│     │  └─ AdminPollPublish.vue
+│     ├─ components/
+│     │  ├─ PollForm.vue
+│     │  ├─ Countdown.vue
+│     │  ├─ ResultChart.vue
+│     │  └─ WalletStatus.vue
+│     ├─ services/
+│     │  ├─ api.ts                          # fetch backend
+│     │  ├─ chain.ts                        # Keplr/CosmJS connect
+│     │  └─ cw20.ts                         # helper CW20 send+hook
+│     ├─ stores/
+│     │  └─ auth.ts                         # token admin
+│     ├─ assets/
+│     └─ styles/
+│        └─ main.css
+│
+├─ backend/                                 # Rust (Axum + Mongo + Redis)
+│  ├─ Cargo.toml
+│  ├─ .env.sandbox
+│  ├─ .env.production
+│  └─ src/
+│     ├─ main.rs
+│     ├─ lib.rs
+│     ├─ routes/
+│     │  ├─ mod.rs
+│     │  ├─ admin.rs                        # /admin/*
+│     │  ├─ auth.rs                         # /auth/*
+│     │  └─ public.rs                       # /public/*
+│     ├─ models/
+│     │  ├─ mod.rs
+│     │  ├─ poll.rs                         # PollDoc struct
+│     │  ├─ admin_user.rs                   # AdminUser struct
+│     │  ├─ vote_idx.rs                     # votes_idx cache struct
+│     │  └─ result_cache.rs                 # results_cache struct
+│     ├─ db/
+│     │  ├─ mod.rs
+│     │  ├─ mongo.rs                        # Mongo client & repos
+│     │  └─ redis.rs                        # Redis cache layer
+│     ├─ cosm/
+│     │  ├─ mod.rs
+│     │  ├─ client.rs                       # smart query contract
+│     │  └─ queries.rs                      # helpers Result/Poll/List
+│     ├─ security/
+│     │  ├─ mod.rs
+│     │  ├─ jwt.rs                          # issue/validate JWT
+│     │  └─ password.rs                     # argon2 hash/verify
+│     ├─ middleware/
+│     │  └─ auth_guard.rs                   # guard /admin/*
+│     ├─ util/
+│     │  ├─ config.rs                       # load env
+│     │  └─ error.rs                        # error types
+│     └─ tests/
+│        └─ http_smoke.rs
+│
+├─ offchain/
+│  ├─ indexer/                              # Rust tokio worker: tail event Vote → Mongo.votes_idx
+│  │  ├─ Cargo.toml
+│  │  └─ src/
+│  │     ├─ main.rs
+│  │     ├─ config.rs
+│  │     ├─ chain_stream.rs                 # RPC/WS stream logs
+│  │     ├─ parsers.rs                      # parse events
+│  │     └─ repository.rs                   # write to Mongo
+│  ├─ notifier/                             # reminder H-1/H-0, publish ended
+│  │  ├─ Cargo.toml
+│  │  └─ src/
+│  │     ├─ main.rs
+│  │     ├─ config.rs
+│  │     ├─ channels/
+│  │     │  ├─ email.rs
+│  │     │  ├─ telegram.rs
+│  │     │  └─ whatsapp.rs
+│  │     └─ scheduler.rs
+│  └─ keeper/                               # optional: ClosePoll/Withdraw terjadwal
+│     ├─ Cargo.toml
+│     └─ src/
+│        ├─ main.rs
+│        ├─ config.rs
+│        └─ actions.rs
+│
+├─ onchain/
+│  ├─ contracts/
+│  │  └─ voting-cw20/
+│  │     ├─ Cargo.toml
+│  │     ├─ schema/
+│  │     │  ├─ execute.json
+│  │     │  ├─ instantiate.json
+│  │     │  └─ query.json
+│  │     └─ src/
+│  │        ├─ lib.rs
+│  │        ├─ msg.rs
+│  │        └─ state.rs
+│  ├─ Makefile                              # cargo wasm, schema, optimize
+│  └─ artifacts/
+│     └─ voting_cw20.wasm                   # hasil build (ignored di git)
+│
+├─ deploy/
+│  ├─ README.md
+│  ├─ env.sandbox.toml
+│  ├─ env.production.toml
+│  ├─ keys/                                 # keyring/ledger configs (gitignored)
+│  ├─ ts/
+│  │  ├─ package.json
+│  │  ├─ tsconfig.json
+│  │  └─ scripts/
+│  │     ├─ upload.ts
+│  │     ├─ instantiate.ts
+│  │     ├─ set_env_from_deploy.ts          # tulis alamat kontrak ke .env frontend/backend
+│  │     └─ verify.ts
+│  └─ ci/
+│     └─ github-actions.yml                  # optional: CI deploy
+│
+└─ docs/
+   ├─ system-architecture.md                 # diagram komponen
+   ├─ sequence-flows.md                      # FE/BE/Offchain/Onchain flows
+   ├─ api-contracts.md                       # REST endpoints
+   ├─ data-model.md                          # skema Mongo & indeks
+   └─ ops-runbook.md                         # run, logs, backup, rotate keys

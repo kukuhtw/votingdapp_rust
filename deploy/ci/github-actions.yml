@@ -1,0 +1,12 @@
+
+name: Deploy VotingDApp
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: npm install --prefix deploy/ts
+      - run: node deploy/ts/scripts/upload.ts --env production

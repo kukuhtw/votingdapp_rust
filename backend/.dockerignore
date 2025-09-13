@@ -1,0 +1,8 @@
+.git
+**/target
+**/node_modules
+frontend/dist
+onchain/artifacts
+# JANGAN ignore backend/migrations atau *.sql
+Cargo.lock
+!Cargo.toml

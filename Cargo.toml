@@ -1,0 +1,5 @@
+# Cargo.toml (root)
+[workspace]
+members = ["backend", "offchain/indexer", "offchain/notifier", "offchain/keeper", "onchain/contracts/voting-cw20"]
+resolver = "2"
+

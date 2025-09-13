@@ -1,0 +1,21 @@
+{
+  "name": "deploy-scripts",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@cosmjs/cosmwasm-stargate": "^0.32.4",
+    "@cosmjs/proto-signing": "^0.32.4",
+    "@cosmjs/stargate": "^0.32.4",
+    "toml": "^3.0.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.1",
+    "typescript": "^5.4.0"
+  },
+  "scripts": {
+    "upload": "ts-node scripts/upload.ts",
+    "instantiate": "ts-node scripts/instantiate.ts",
+    "set-env": "ts-node scripts/set_env_from_deploy.ts"
+  }
+}

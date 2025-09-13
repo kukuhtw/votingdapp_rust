@@ -1,0 +1,113 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: voting-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: voting
+      MYSQL_USER: voting_user
+      MYSQL_PASSWORD: voting_pass
+      TZ: Asia/Jakarta
+    command:
+    - --sql-mode=
+    - --character-set-server=utf8mb4
+    - --collation-server=utf8mb4_unicode_ci
+    - --explicit_defaults_for_timestamp=ON
+    ports: ["3306:3306"]
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./scripts/init_mysql.sql:/docker-entrypoint-initdb.d/00_schema.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-prootpass"]
+      interval: 5s
+      timeout: 3s
+      retries: 25
+    restart: unless-stopped
+
+  redis:
+    image: redis:7
+    container_name: voting-redis
+    ports: ["6379:6379"]
+    command: ["redis-server", "--appendonly", "yes"]
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: voting-backend
+    env_file: config/sandbox/backend.env
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    ports: ["8080:8080"]
+    environment:
+      TZ: Asia/Jakarta
+    # ⚠️ PROD: hapus volume ini agar binary tidak ketimpa source
+    # volumes:
+    #   - ./backend:/app
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend    # ✅ lebih cepat & bersih
+      dockerfile: Dockerfile
+    container_name: voting-frontend
+    env_file: config/sandbox/frontend.env
+    depends_on:
+      backend:
+        condition: service_started
+    ports: ["8081:80"]
+    environment:
+      TZ: Asia/Jakarta
+    restart: unless-stopped
+
+  indexer:
+    build:
+      context: .
+      dockerfile: offchain/indexer/Dockerfile
+    container_name: voting-indexer
+    env_file:
+      - config/sandbox/chain.env
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: mysql://voting_user:voting_pass@mysql:3306/voting
+      TZ: Asia/Jakarta
+    restart: unless-stopped
+
+  notifier:
+    build:
+      context: .
+      dockerfile: offchain/notifier/Dockerfile
+    container_name: voting-notifier
+    env_file:
+      - config/sandbox/chain.env
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: mysql://voting_user:voting_pass@mysql:3306/voting
+      TZ: Asia/Jakarta
+    restart: unless-stopped
+
+  keeper:
+    build:
+      context: .
+      dockerfile: offchain/keeper/Dockerfile
+    container_name: voting-keeper
+    env_file:
+      - config/sandbox/chain.env
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: mysql://voting_user:voting_pass@mysql:3306/voting
+      TZ: Asia/Jakarta
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
