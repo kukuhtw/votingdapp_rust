@@ -1,4 +1,3 @@
-Oke 👍 mari kita perbaiki `docs/ops-runbook.md` supaya konsisten dengan MySQL (bukan Mongo), tambahkan langkah yang lebih lengkap, plus tambahkan **diagram Mermaid** untuk memperjelas alur ops.
 
 ---
 
