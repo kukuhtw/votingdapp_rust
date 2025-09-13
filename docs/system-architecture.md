@@ -4,6 +4,8 @@ Dokumen ini menjelaskan arsitektur sistem **Voting DApp** yang terdiri dari Fron
 
 ## High-level Diagram (Mermaid)
 
+## High-level Diagram (Mermaid)
+
 ```mermaid
 sequenceDiagram
   participant V as Voter (Frontend)
@@ -35,6 +37,7 @@ sequenceDiagram
   A->>R: check cache
   R-->>A: cached (or A->>M if miss)
   A-->>V: aggregated results
+
 
 ## Komponen
 
