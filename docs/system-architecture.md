@@ -3,7 +3,6 @@
 Dokumen ini menjelaskan arsitektur sistem **Voting DApp** yang terdiri dari Frontend (Vue), Backend (Axum/Rust), Smart Contract (CosmWasm), serta komponen Off-chain (Indexer/Notifier) dengan **MySQL** sebagai database utama dan Redis untuk cache.
 
 ## High-level Diagram (Mermaid)
-
 ```mermaid
 flowchart LR
   subgraph FE [Frontend (Vue 3 + Vite)]
@@ -37,7 +36,7 @@ flowchart LR
   NOTIF --> API
   API --> UI
 
----
+
 
 ## Komponen
 
