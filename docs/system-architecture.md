@@ -4,28 +4,14 @@ Dokumen ini menjelaskan arsitektur sistem **Voting DApp** yang terdiri dari Fron
 
 ## High-level Diagram (Mermaid)
 
-```mermaid
-flowchart LR
-  UI[Frontend (Vue3+Vite)]
-  API[Backend API (Axum)]
-  CACHE[Redis Cache]
-  DB[(MySQL)]
-  VCW20[CosmWasm Contract (voting-cw20)]
-  IDX[Off-chain Indexer]
-  NOTIF[Notifier (optional)]
+Frontend ──REST──▶ Backend ──▶ MySQL
+   │                 │  ▲
+   │                 ▼  │
+   └─ Vote TX ─────▶ Contract ──▶ Indexer ──▶ MySQL
+                      ▲
+                      └──── (Admin push on-chain from Backend)
+Backend ⇄ Redis (cache)
 
-  UI -- "GET polls/results, Admin ops" --> API
-  API --> DB
-  API <-- "cache" --> CACHE
-
-  API -- "Admin push on-chain" --> VCW20
-  UI -- "Vote TX (Keplr/Leap)" --> VCW20
-
-  VCW20 -- "Events (Vote)" --> IDX
-  IDX --> DB
-
-  NOTIF --> API
-  API --> UI
 
 ## Komponen
 
