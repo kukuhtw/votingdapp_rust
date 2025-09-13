@@ -1,3 +1,41 @@
+# System Architecture
+
+Dokumen ini menjelaskan arsitektur sistem **Voting DApp** yang terdiri dari Frontend (Vue), Backend (Axum/Rust), Smart Contract (CosmWasm), serta komponen Off-chain (Indexer/Notifier) dengan **MySQL** sebagai database utama dan Redis untuk cache.
+
+## High-level Diagram (Mermaid)
+
+```mermaid
+flowchart LR
+  subgraph FE[Frontend (Vue 3 + Vite)]
+    UI[Public + Admin UI]
+  end
+
+  subgraph BE[Backend (Axum/Rust)]
+    API[REST API]
+    Cache[Redis Cache]
+    DB[(MySQL)]
+  end
+
+  subgraph CHAIN[CosmWasm Contract]
+    VCW20[voting-cw20]
+  end
+
+  subgraph OFF[Off-chain Workers]
+    IDX[Indexing Worker]
+    NOTIF[Notifier (optional)]
+  end
+
+  UI -- GET polls/results, Admin ops --> API
+  API --> DB
+  API <-- cache --> Cache
+
+  API -- Admin push on-chain --> VCW20
+  UI -- Vote TX (Keplr/Leap) --> VCW20
+
+  VCW20 -- Events (Vote) --> IDX
+  IDX --> DB
+  NOTIF --> API
+  API --> UI
 
 ---
 
