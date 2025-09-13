@@ -78,8 +78,8 @@ flowchart TD
     end
 
     subgraph STACK[Runtime Stack]
-      FE [Frontend (Vue)]
-      BE [Backend (Axum)]
+      FE [ Frontend (Vue)]
+      BE [ Backend (Axum)]
       IDX[ Off-chain Indexer]
       DB [(MySQL)]
       REDIS [(Redis)]
