@@ -2,6 +2,41 @@
 
 Dokumen ini menjelaskan arsitektur sistem **Voting DApp** yang terdiri dari Frontend (Vue), Backend (Axum/Rust), Smart Contract (CosmWasm), serta komponen Off-chain (Indexer/Notifier) dengan **MySQL** sebagai database utama dan Redis untuk cache.
 
+
+
+    +-----------------------+
+    |      Frontend Vue     |
+    | (UI publik + admin)    |
+    +-----------+-----------+
+                |
+                | REST API (polls, vote result, admin operations)
+                v
+    +-----------------------+
+    |   Backend Axum        |
+    | MySQL + Redis + JWT   |
+    +-----------+-----------+
+                |
+                | Admin push poll → on-chain message
+                v
+    +-----------------------+
+    | CosmWasm Contract     |
+    | (voting-cw20)         |
+    +-----------+-----------+
+                |
+                | Emits Vote events
+                v
+    +-----------------------+
+    | Off-chain Indexer     |
+    | reads Vote events,     |
+    | writes to MySQL       |
+    +-----------+-----------+
+                |
+                | Cached & fast queries
+                v
+    +-----------------------+
+    | MySQL Database        |
+    +-----------------------+
+
 ## High-level Diagram (Mermaid)
 
 ```mermaid
