@@ -72,18 +72,18 @@ cp dump.rdb backup/redis_$(date +%F).rdb
 
 ```mermaid
 flowchart TD
-    subgraph USER[Operator / DevOps]
-      CMD[Docker Compose CLI]
-      BAK[Backup Scripts]
+    subgraph USER["Operator / DevOps"]
+      CMD["Docker Compose CLI"]
+      BAK["Backup Scripts"]
     end
 
-    subgraph STACK[Runtime Stack]
-      FE [ Frontend (Vue)]
-      BE [ Backend (Axum)]
-      IDX[ Off-chain Indexer]
-      DB [(MySQL)]
-      REDIS [(Redis)]
-      CHAIN [CosmWasm Contract]
+    subgraph STACK["Runtime Stack"]
+      FE["Frontend (Vue)"]
+      BE["Backend (Axum)"]
+      IDX["Off-chain Indexer"]
+      DB[("(MySQL)")]
+      REDIS[("(Redis)")]
+      CHAIN["CosmWasm Contract"]
     end
 
     CMD --> FE
@@ -97,6 +97,7 @@ flowchart TD
     FE --> CHAIN
     BAK --> DB
     BAK --> REDIS
+
 ```mr
 
 ---
