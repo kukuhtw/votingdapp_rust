@@ -78,12 +78,12 @@ flowchart TD
     end
 
     subgraph STACK[Runtime Stack]
-      FE[Frontend (Vue)]
-      BE[Backend (Axum)]
-      IDX[Off-chain Indexer]
-      DB[(MySQL)]
-      REDIS[(Redis)]
-      CHAIN[CosmWasm Contract]
+      FE [Frontend (Vue)]
+      BE [Backend (Axum)]
+      IDX[ Off-chain Indexer]
+      DB [(MySQL)]
+      REDIS [(Redis)]
+      CHAIN [CosmWasm Contract]
     end
 
     CMD --> FE
