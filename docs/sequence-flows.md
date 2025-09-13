@@ -1,21 +1,13 @@
-
 # Sequence Flows
 
-## Voting Flow
-1. User buka FE → fetch poll list dari BE.
-2. User connect wallet (Keplr).
-3. User pilih opsi → TX CW20::Send + hook Vote → on-chain contract.
-4. Kontrak validasi:
-   - poll aktif & belum expired.
-   - user belum pernah vote.
-   - cukup balance & amount.
-5. Event `Vote` emited.
-6. Indexer baca event → tulis ke Mongo.votes_idx.
-7. BE expose `/public/polls/:id/result` pakai cache Redis.
+## 1. Admin Publish Poll
+Admin UI → Backend API → MySQL → Push to Chain → Contract deployed
 
-## Admin Publish Flow
-1. Admin login (JWT).
-2. Admin create draft poll → save ke Mongo (status=draft).
-3. Admin tekan "Publish" → FE panggil BE.
-4. BE instantiate poll di kontrak on-chain.
-5. Simpan txhash & update status=pending/published.
+## 2. Voter Participate
+Voter UI → Wallet (Keplr/Leap) → TX ke Contract → Contract simpan vote
+
+## 3. Off-chain Indexer
+Contract emit event `Vote` → Indexer listen → Insert hasil ke MySQL → Cache di Redis
+
+## 4. Frontend Query Result
+Frontend → Backend API → MySQL/Redis → tampilkan hasil real-time
